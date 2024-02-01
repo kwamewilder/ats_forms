@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ATS OCCURRENCE REPORT FORM B - SMS FORM 126</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+
+  <div class="container">
+    <h1>ATS OCCURRENCE REPORT FORM B - SMS FORM 126</h1>
+    
+    <!-- Form for ATS Report B -->
+    <form action="/submit-ats-report-b" method="post">
+      <!-- Ref No -->
+      <div class="form-group">
+        <label for="refNo">Ref No</label>
+        <input type="text" class="form-control" id="refNo" name="refNo" required>
+      </div>
+
+      <!-- Subtitle A: Data -->
+      <h2>A. Data</h2>
+      <div class="form-group">
+        <label for="aircraftCallSign">Aircraft Call Sign</label>
+        <input type="text" class="form-control" id="aircraftCallSign" name="aircraftCallSign" required>
+      </div>
+
+      <div class="form-group">
+        <label for="aircraftType">Aircraft Type</label>
+        <input type="text" class="form-control" id="aircraftType" name="aircraftType" required>
+      </div>
+
+      <div class="form-group">
+        <label for="registration">Registration</label>
+        <input type="text" class="form-control" id="registration" name="registration" required>
+      </div>
+
+      <div class="form-group">
+        <label for="operator">Operator</label>
+        <input type="text" class="form-control" id="operator" name="operator" required>
+      </div>
+
+      <div class="form-group">
+        <label for="placeOfDeparture">Place of Departure</label>
+        <input type="text" class="form-control" id="placeOfDeparture" name="placeOfDeparture" required>
+      </div>
+
+      <div class="form-group">
+        <label for="timeOfDeparture">Time of Departure</label>
+        <input type="time" class="form-control" id="timeOfDeparture" name="timeOfDeparture" required>
+      </div>
+
+      <div class="form-group">
+        <label for="destination">Destination</label>
+        <input type="text" class="form-control" id="destination" name="destination" required>
+      </div>
+
+      <div class="form-group">
+        <label for="eta">ETA</label>
+        <input type="text" class="form-control" id="eta" name="eta" required>
+      </div>
+
+      <div class="form-group">
+        <label for="route">Route</label>
+        <input type="text" class="form-control" id="route" name="route" required>
+      </div>
+
+      <!-- Phase of Flight -->
+<div class="form-group">
+  <label>Phase of Flight</label>
+  <div class="form-check">
+    <input type="checkbox" class="form-check-input" id="climbing" name="phaseOfFlightClimbing" value="Climbing">
+    <label class="form-check-label" for="climbing">Climbing</label>
+  </div>
+  <div class="form-check">
+    <input type="checkbox" class="form-check-input" id="descending" name="phaseOfFlightDescending" value="Descending">
+    <label class="form-check-label" for="descending">Descending</label>
+  </div>
+  <div class="form-check">
+    <input type="checkbox" class="form-check-input" id="cruising" name="phaseOfFlightCruising" value="Cruising">
+    <label class="form-check-label" for="cruising">Cruising</label>
+  </div>
+</div>
+
+
+      <!-- Subtitle B: The Incident -->
+      <h2>B. The Incident</h2>
+      <div class="form-group">
+        <label for="dateOfIncident">Date of Incident/Accident</label>
+        <input type="date" class="form-control" id="dateOfIncident" name="dateOfIncident" required>
+      </div>
+
+      <div class="form-group">
+        <label for="timeOfIncident">Time</label>
+        <input type="time" class="form-control" id="timeOfIncident" name="timeOfIncident" required>
+      </div>
+
+      <div class="form-group">
+        <label for="placeOfIncident">Place</label>
+        <input type="text" class="form-control" id="placeOfIncident" name="placeOfIncident" required>
+      </div>
+
+      <div class="form-group">
+        <label for="statusOfFacilities">Status of Facilities</label>
+        <input type="text" class="form-control" id="statusOfFacilities" name="statusOfFacilities" required>
+      </div>
+
+      <div class="form-group">
+        <label for="detailedDescription">Detailed Description of Incident/Accident</label>
+        <textarea class="form-control" id="detailedDescription" name="detailedDescription" rows="5" required></textarea>
+      </div>
+
+      <div class="form-group">
+        <label for="controllerName">Name of Controller</label>
+        <input type="text" class="form-control" id="controllerName" name="controllerName" required>
+      </div>
+
+      <div class="form-group">
+        <label for="controllerSignature">Signature</label>
+        <input type="text" class="form-control" id="controllerSignature" name="controllerSignature" required>
+      </div>
+
+      <div class="form-group">
+        <label for="supervisorName">Supervisor Name</label>
+        <input type="text" class="form-control" id="supervisorName" name="supervisorName" required>
+      </div>
+
+      <div class="form-group">
+        <label for="supervisorSignature">Supervisor Signature</label>
+        <input type="text" class="form-control" id="supervisorSignature" name="supervisorSignature" required>
+      </div>
+
+      <div class="form-group">
+        <label for="date">Date</label>
+        <input type="date" class="form-control" id="date" name="reportDate" required>
+      </div>
+
+      <div class="form-group">
+        <label for="time">Time</label>
+        <input type="time" class="form-control" id="time" name="reportTime" required>
+      </div>
+
+      <button type="submit" class="btn btn-primary">Submit Report</button>
+    </form>
+  </div>
+
+</body>
+</html>

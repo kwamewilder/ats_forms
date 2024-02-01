@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VOLUNTARY AND CONFIDENTIAL REPORTING FORM – SMS FORM 129</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+
+  <div class="container">
+    <h1>VOLUNTARY AND CONFIDENTIAL REPORTING FORM – SMS FORM 129</h1>
+    
+    <!-- Form for Voluntary Report -->
+    <form action="/submit-voluntary-report" method="post">
+      <!-- Ref No -->
+      <div class="form-group">
+        <label for="refNo">Ref No</label>
+        <input type="text" class="form-control" id="refNo" name="refNo" required>
+      </div>
+
+      <!-- A. Aircraft Related Events -->
+      <h2>A. Aircraft Related Events</h2>
+      <div class="form-group">
+        <label for="aircraftCallSign">Aircraft Call Sign</label>
+        <input type="text" class="form-control" id="aircraftCallSign" name="aircraftCallSign" required>
+      </div>
+      <!-- Add similar form fields for Aircraft Type, Registration, Operator, Place of Departure, Time of Departure, Destination, ETA, Route, and Phase of Flight -->
+
+      <h2>B. Other Events</h2>
+      <div class="form-check">
+        <input type="checkbox" class="form-check-input" id="equipmentFacility" name="events[]" value="Equipment/Facility">
+        <label class="form-check-label" for="equipmentFacility">Equipment/Facility</label>
+      </div>
+      <div class="form-check">
+        <input type="checkbox" class="form-check-input" id="procedures" name="events[]" value="Procedures">
+        <label class="form-check-label" for="procedures">Procedures</label>
+      </div>
+      <div class="form-check">
+        <input type="checkbox" class="form-check-input" id="personnel" name="events[]" value="Personnel">
+        <label class="form-check-label" for="personnel">Personnel</label>
+      </div>
+      <div class="form-check">
+        <input type="checkbox" class="form-check-input" id="others" name="events[]" value="Others">
+        <label class="form-check-label" for="others">Others</label>
+      </div>
+
+      <!-- C. The Occurrence -->
+      <h2>C. The Occurrence</h2>
+      <div class="form-group">
+        <label for="dateOfOccurrence">Date of Occurrence</label>
+        <input type="date" class="form-control" id="dateOfOccurrence" name="dateOfOccurrence" required>
+      </div>
+      <div class="form-group">
+        <label for="timeOfOccurrence">Time of Occurrence</label>
+        <input type="time" class="form-control" id="timeOfOccurrence" name="timeOfOccurrence" required>
+      </div>
+      <div class="form-group">
+        <label for="placeOfOccurrence">Place of Occurrence</label>
+        <input type="text" class="form-control" id="placeOfOccurrence" name="placeOfOccurrence" required>
+      </div>
+      <!-- Add similar form fields for Status of Facilities, Detailed Description of Occurrence, Name of Controller, Telephone, Signature, Date, Time -->
+
+      <button type="submit" class="btn btn-primary">Submit Report</button>
+    </form>
+  </div>
+
+</body>
+</html>
