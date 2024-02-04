@@ -2,6 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const path = require('path'); // Add this line to use the 'path' module
 const mysql = require('mysql2');
+const fs = require('fs');
 const app = express();
 const port = 3000;
 
@@ -15,9 +16,9 @@ const db = mysql.createConnection({
   password: 'AVNS_futcysUyq8Mu3YZhr4U',
   database: 'defaultdb',
   port: 27132,
-  //ssl: {
-    //ca: 'path/to/ca.pem', // Replace with the actual path to your CA certificate file
-  //},
+  ssl: {
+    ca: fs.readFileSync(path.join(__dirname, 'ca.pem')),
+  },
 });
 
 db.connect((err) => {
