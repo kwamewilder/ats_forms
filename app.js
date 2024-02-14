@@ -66,59 +66,58 @@ app.post('/submit-hazard-report', (req, res) => {
 
 /// Handle form submission for ATS Report A
 app.post('/submit-ats-report-a', (req, res) => {
-  // Extract data from the form submission
-  const refNo = req.body.refNo;
-  const aircraftCallSign = req.body.aircraftCallSign;
-  const aircraftType = req.body.aircraftType;
-  const operator = req.body.operator;
-  const phaseOfFlightTaxiing = req.body.phase_of_flight_taxiing === 'on' ? 1 : 0;
-  const phaseOfFlightLanding = req.body.phase_of_flight_landing === 'on' ? 1 : 0;
-  const phaseOfFlightRolling = req.body.phase_of_flight_rolling === 'on' ? 1 : 0;
-  const phaseOfFlightStationary = req.body.phase_of_flight_stationary === 'on' ? 1 : 0;
-  const dateOfIncident = req.body.dateOfIncident;
-  const timeOfIncident = req.body.timeOfIncident;
-  const placeOfIncident = req.body.placeOfIncident;
-  const detailedDescription = req.body.detailedDescription;
-  const controllerName = req.body.controllerName;
-  const controllerSignature = req.body.controllerSignature;
-  const supervisorName = req.body.supervisorName;
-  const supervisorSignature = req.body.supervisorSignature;
+ // Extract data from the form submission
+const refNo = req.body.refNo;
+const aircraftCallSign = req.body.aircraftCallSign;
+const aircraftType = req.body.aircraftType;
+const operator = req.body.operator;
+const phaseOfFlightTaxiing = req.body.phaseOfFlightTaxiing ? 'Taxiing' : '';
+const phaseOfFlightLanding = req.body.phaseOfFlightLanding ? 'Landing' : '';
+const phaseOfFlightRolling = req.body.phaseOfFlightRolling ? 'Rolling' : '';
+const phaseOfFlightStationary = req.body.phaseOfFlightStationary ? 'Stationary' : '';
+const phaseOfFlight = [phaseOfFlightTaxiing, phaseOfFlightLanding, phaseOfFlightRolling, phaseOfFlightStationary].filter(Boolean).join(', '); // Join the array into a comma-separated string
+const dateOfIncident = req.body.dateOfIncident;
+const timeOfIncident = req.body.timeOfIncident;
+const placeOfIncident = req.body.placeOfIncident;
+const detailedDescription = req.body.detailedDescription;
+const controllerName = req.body.controllerName;
+const controllerSignature = req.body.controllerSignature;
+const supervisorName = req.body.supervisorName;
+const supervisorSignature = req.body.supervisorSignature;
 
-  // Insert the data into the MySQL database
-  const sql = `
-    INSERT INTO ats_report_a 
-    (ref_no, aircraft_call_sign, aircraft_type, operator, phase_of_flight_taxiing, phase_of_flight_landing, phase_of_flight_rolling, phase_of_flight_stationary, date_of_incident, time_of_incident, place_of_incident, detailed_description, controller_name, controller_signature, supervisor_name, supervisor_signature) 
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-  `;
-  const values = [
-    refNo,
-    aircraftCallSign,
-    aircraftType,
-    operator,
-    phaseOfFlightTaxiing,
-    phaseOfFlightLanding,
-    phaseOfFlightRolling,
-    phaseOfFlightStationary,
-    dateOfIncident,
-    timeOfIncident,
-    placeOfIncident,
-    detailedDescription,
-    controllerName,
-    controllerSignature,
-    supervisorName,
-    supervisorSignature
-  ];
+// Insert the data into the MySQL database
+const sql = `
+  INSERT INTO ats_report_a 
+  (ref_no, aircraft_call_sign, aircraft_type, operator, phase_of_flight, date_of_incident, time_of_incident, place_of_incident, detailed_description, controller_name, controller_signature, supervisor_name, supervisor_signature) 
+  VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+`;
+const values = [
+  refNo,
+  aircraftCallSign,
+  aircraftType,
+  operator,
+  phaseOfFlight,
+  dateOfIncident,
+  timeOfIncident,
+  placeOfIncident,
+  detailedDescription,
+  controllerName,
+  controllerSignature,
+  supervisorName,
+  supervisorSignature
+];
 
-  db.query(sql, values, (err, result) => {
-    if (err) {
-      console.error('Error inserting data into MySQL:', err);
-      res.status(500).send('Internal Server Error: ' + err.message); // Send detailed error message
-      return;
-    }
+db.query(sql, values, (err, result) => {
+  if (err) {
+    console.error('Error inserting data into MySQL:', err);
+    res.status(500).send('Internal Server Error: ' + err.message); // Send detailed error message
+    return;
+  }
 
-    console.log('ATS Report A submitted successfully!');
-    res.send('ATS Report A submitted successfully!');
-  });
+  console.log('ATS Report A submitted successfully!');
+  res.send('ATS Report A submitted successfully!');
+});
+
 });
 
 
@@ -195,33 +194,6 @@ app.post('/submit-ats-report-b', (req, res) => {
   });
 });
 
-
-// Handle ATS Report C form submission
-app.post('/submit-ats-report-c', (req, res) => {
-  // Extract data from the form submission
-  const refNo = req.body.refNo;
-  const date = req.body.date;
-  const time = req.body.time;
-  const facilityEquipment = req.body.facilityEquipment;
-  const occurrence = req.body.occurrence;
-  const controllerName = req.body.controllerName;
-  const controllerSignature = req.body.controllerSignature;
-
-  // Insert the data into the MySQL database
-  const sql = 'INSERT INTO ats_report_c (ref_no, date, time, facility_equipment, occurrence, controller_name, controller_signature) VALUES (?, ?, ?, ?, ?, ?, ?)';
-  const values = [refNo, date, time, facilityEquipment, occurrence, controllerName, controllerSignature];
-
-  db.query(sql, values, (err, result) => {
-    if (err) {
-      console.error('Error inserting data into MySQL:', err);
-      res.status(500).send('Internal Server Error');
-      return;
-    }
-
-    console.log('ATS Report C submitted successfully!');
-    res.send('ATS Report C submitted successfully!');
-  });
-});
 
 // Handle ATS Report C form submission
 app.post('/submit-ats-report-c', (req, res) => {
