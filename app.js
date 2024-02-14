@@ -82,14 +82,13 @@ const placeOfIncident = req.body.placeOfIncident;
 const detailedDescription = req.body.detailedDescription;
 const controllerName = req.body.controllerName;
 const controllerSignature = req.body.controllerSignature;
-const supervisorName = req.body.supervisorName;
-const supervisorSignature = req.body.supervisorSignature;
+
 
 // Insert the data into the MySQL database
 const sql = `
   INSERT INTO ats_report_a 
-  (ref_no, aircraft_call_sign, aircraft_type, operator, phase_of_flight, date_of_incident, time_of_incident, place_of_incident, detailed_description, controller_name, controller_signature, supervisor_name, supervisor_signature) 
-  VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+  (ref_no, aircraft_call_sign, aircraft_type, operator, phase_of_flight, date_of_incident, time_of_incident, place_of_incident, detailed_description, controller_name, controller_signature, ) 
+  VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,)
 `;
 const values = [
   refNo,
@@ -102,9 +101,7 @@ const values = [
   placeOfIncident,
   detailedDescription,
   controllerName,
-  controllerSignature,
-  supervisorName,
-  supervisorSignature
+  controllerSignature
 ];
 
 db.query(sql, values, (err, result) => {
@@ -145,16 +142,14 @@ app.post('/submit-ats-report-b', (req, res) => {
   const detailedDescription = req.body.detailedDescription;
   const controllerName = req.body.controllerName;
   const controllerSignature = req.body.controllerSignature;
-  const supervisorName = req.body.supervisorName;
-  const supervisorSignature = req.body.supervisorSignature;
   const reportDate = req.body.reportDate;
   const reportTime = req.body.reportTime;
 
   // Insert the data into the MySQL database
   const sql = `
     INSERT INTO ats_report_b 
-    (ref_no, aircraft_call_sign, aircraft_type, aircraft_registration, operator_name, place_of_departure, departure_time, destination, eta, route, phase_of_flight, incident_date, incident_time, incident_location, facilities_status, detailed_description, controller_name, controller_signature, supervisor_name, supervisor_signature, report_date, report_time) 
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    (ref_no, aircraft_call_sign, aircraft_type, aircraft_registration, operator_name, place_of_departure, departure_time, destination, eta, route, phase_of_flight, incident_date, incident_time, incident_location, facilities_status, detailed_description, controller_name, controller_signature, report_date, report_time) 
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `;
 
   const values = [
@@ -176,8 +171,6 @@ app.post('/submit-ats-report-b', (req, res) => {
     detailedDescription,
     controllerName,
     controllerSignature,
-    supervisorName,
-    supervisorSignature,
     reportDate,
     reportTime
   ];
