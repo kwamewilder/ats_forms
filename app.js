@@ -9,6 +9,29 @@ const port = 3000;
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
+// Serve the login page
+app.get('/login', (req, res) => {
+  res.sendFile(__dirname + '/login.html');
+});
+
+// Handle login form submission
+app.post('/login', (req, res) => {
+  const username = req.body.username;
+  const password = req.body.password;
+
+  // Perform authentication logic here
+  // Example: Check if username and password are valid
+  if (username === 'admin' && password === 'password') {
+      // Redirect to the dashboard upon successful login
+      res.redirect('/dashboard');
+  } else {
+      // Redirect back to the login page with an error message
+      res.redirect('/login?error=1');
+  }
+});
+
+
+
 // MySQL Connection
 const db = mysql.createConnection({
   host: 'mysql-form-a-form-a.a.aivencloud.com',

@@ -8,5 +8,9 @@
   },
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "auth0-js": "^9.24.1",
+    "bootstrap": "^5.3.2"
+  }
 }
