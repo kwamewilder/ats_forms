@@ -5,6 +5,7 @@ const mysql = require('mysql2');
 const fs = require('fs');
 const app = express();
 const port = 3000;
+require('dotenv').config();
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -34,11 +35,11 @@ app.post('/login', (req, res) => {
 
 // MySQL Connection
 const db = mysql.createConnection({
-  host: 'mysql-form-a-form-a.a.aivencloud.com',
-  user: 'avnadmin',
-  password: 'AVNS_futcysUyq8Mu3YZhr4U',
-  database: 'defaultdb',
-  port: 27132,
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_DATABASE,
+  port: process.env.DB_PORT,
   ssl: {
     ca: fs.readFileSync(path.join(__dirname, 'ca.pem')),
   },
