@@ -1,37 +1,41 @@
-body {
-    background-color: #f8f9fa; /* Light gray background */
-  }
-  .container {
-    max-width: 800px;
-    margin: 0 auto;
-    padding-top: 50px;
-    text-align: center;
-  }
-  h1 {
-    background-color: #007bff;
-    color: white;
-    padding: 10px;
-  }
-  p {
-    color: #6c757d; /* Gray paragraph text */
-  }
-  list-container {
-    display: flex; /* Use flexbox */
-    flex-wrap: wrap; /* Allow the items to wrap to the next row */
-    justify-content: center; /* Center the list items horizontally */
-  }
-  ul {
-    list-style-type: none;
-    padding: 0;
-  }
-  li {
-    margin-bottom: 10px;
-  }
-  a {
-    color: #007bff; /* Blue links */
-    text-decoration: none;
-  }
-  a:hover {
-    text-decoration: underline;
-  }
-  
+/* styles.css */
+
+.container {
+  max-width: 800px;
+  margin: 20px auto;
+  padding: 20px;
+  background: #f4f7f8;
+  border-radius: 8px;
+  font-family: Georgia, "Times New Roman", Times, serif;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Added shadow */
+}
+
+h1 {
+  font-size: 28px; /* Adjust the font size */
+  color: #fff; /* Change the text color */
+  text-align: center; /* Center the heading */
+  margin-bottom: 20px; /* Add some bottom margin */
+  text-transform: uppercase; /* Transform text to uppercase */
+  background-color: #1abc9c; /* Background color */
+  padding: 10px 20px; /* Padding for the heading */
+  border-radius: 8px; /* Rounded corners */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Box shadow */
+}
+
+ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+li {
+  margin-bottom: 10px;
+}
+
+a {
+  color: #1abc9c;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
