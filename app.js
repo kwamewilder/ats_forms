@@ -1,35 +1,31 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const path = require('path'); // Add this line to use the 'path' module
+const session = require('express-session');
+const passport = require('passport');
+const LocalStrategy = require('passport-local').Strategy;
 const mysql = require('mysql2');
 const fs = require('fs');
+const path = require('path');
+require('dotenv').config();
+const bcrypt = require('bcrypt');
+
+
 const app = express();
 const port = 3000;
-require('dotenv').config();
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// Serve the login page
-app.get('/login', (req, res) => {
-  res.sendFile(__dirname + '/login.html');
-});
+// Express session middleware
+app.use(session({
+  secret: 'your_secret_key', // Change this to your own secret key
+  resave: false,
+  saveUninitialized: false
+}));
 
-// Handle login form submission
-app.post('/login', (req, res) => {
-  const username = req.body.username;
-  const password = req.body.password;
-
-  // Perform authentication logic here
-  // Example: Check if username and password are valid
-  if (username === 'admin' && password === 'password') {
-      // Redirect to the dashboard upon successful login
-      res.redirect('/dashboard');
-  } else {
-      // Redirect back to the login page with an error message
-      res.redirect('/login?error=1');
-  }
-});
+// Passport middleware
+app.use(passport.initialize());
+app.use(passport.session());
 
 
 
@@ -52,6 +48,112 @@ db.connect((err) => {
   }
   console.log('Connected to MySQL');
 });
+
+// Passport local strategy
+passport.use(new LocalStrategy(
+  (username, password, done) => {
+      // Find user in the database by username
+      db.query('SELECT * FROM users WHERE username = ?', [username], (err, results) => {
+          if (err) {
+              return done(err);
+          }
+          if (!results.length) {
+              return done(null, false, { message: 'Incorrect username.' });
+          }
+          const user = results[0];
+          // Compare hashed password
+          bcrypt.compare(password, user.password, (err, isMatch) => {
+              if (err) {
+                  return done(err);
+              }
+              if (isMatch) {
+                  // Passwords match, authentication successful
+                  return done(null, user);
+              } else {
+                  // Passwords do not match
+                  return done(null, false, { message: 'Incorrect password.' });
+              }
+          });
+      });
+  }
+));
+
+passport.serializeUser((user, done) => {
+  done(null, user.id);
+});
+
+passport.deserializeUser((id, done) => {
+  const sql = 'SELECT * FROM users WHERE id = ?';
+  db.query(sql, [id], (err, results) => {
+    if (err || !results || results.length === 0) {
+      return done(err, null);
+    }
+    const user = results[0];
+    return done(null, user);
+  });
+});
+
+// Routes
+
+// Display registration form
+app.get('/register', (req, res) => {
+  res.sendFile(__dirname + '/registration.html');
+});
+
+// Handle registration form submission
+app.post('/register', (req, res) => {
+  const { username, password } = req.body;
+
+  // Hash the password
+  bcrypt.hash(password, 10, (err, hashedPassword) => {
+      if (err) {
+          console.error('Error hashing password:', err);
+          res.status(500).send('Internal Server Error');
+          return;
+      }
+
+      // Insert user into the database
+      const sql = 'INSERT INTO users (username, password) VALUES (?, ?)';
+      const values = [username, hashedPassword];
+
+      db.query(sql, values, (err, result) => {
+          if (err) {
+              console.error('Error inserting user into database:', err);
+              res.status(500).send('Internal Server Error');
+              return;
+          }
+
+          console.log('User registered successfully!');
+          res.send('User registered successfully!');
+      });
+  });
+});
+
+app.get('/login', (req, res) => {
+  res.sendFile(__dirname + '/login.html');
+});
+
+app.post('/login', passport.authenticate('local', {
+  successRedirect: '/dashboard',
+  failureRedirect: '/login',
+  failureFlash: true
+}));
+
+app.get('/logout', (req, res) => {
+  req.logout();
+  res.redirect('/login');
+});
+
+// Dashboard route (requires authentication)
+app.get('/dashboard', (req, res) => {
+  if (req.isAuthenticated()) {
+    // Render the dashboard page
+    res.send('Dashboard page');
+  } else {
+    res.redirect('/login');
+  }
+});
+
 
 // Serve static files from the 'public' directory
 app.use(express.static(path.join(__dirname, 'public')));
