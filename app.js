@@ -8,6 +8,11 @@ const fs = require('fs');
 const path = require('path');
 require('dotenv').config();
 const bcrypt = require('bcrypt');
+const ejs = require('ejs');
+const axios = require('axios');
+const flash = require('express-flash');
+
+
 
 
 const app = express();
@@ -18,14 +23,25 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 // Express session middleware
 app.use(session({
-  secret: 'your_secret_key', // Change this to your own secret key
+  secret: 'your_secret_key', 
   resave: false,
   saveUninitialized: false
 }));
 
+// Setup flash middleware
+app.use(flash());
+
 // Passport middleware
 app.use(passport.initialize());
 app.use(passport.session());
+
+// Middleware to check if user is authenticated
+const isAuthenticated = (req, res, next) => {
+  if (req.isAuthenticated()) {
+    return next();
+  }
+  res.redirect('/login');
+};
 
 
 
@@ -129,29 +145,28 @@ app.post('/register', (req, res) => {
   });
 });
 
-app.get('/login', (req, res) => {
-  res.sendFile(__dirname + '/login.html');
-});
-
+// Route to handle user login
 app.post('/login', passport.authenticate('local', {
-  successRedirect: '/dashboard',
-  failureRedirect: '/login',
+  successRedirect: '/report-management', // Redirect to report management page upon successful login
+  failureRedirect: '/login', // Redirect back to login page upon failed login
   failureFlash: true
 }));
 
+// Route to render login form
+app.get('/login', (req, res) => {
+  res.render('login', { message: req.flash('error') });
+});
+
+// Route to handle user logout
 app.get('/logout', (req, res) => {
   req.logout();
   res.redirect('/login');
 });
 
-// Dashboard route (requires authentication)
-app.get('/dashboard', (req, res) => {
-  if (req.isAuthenticated()) {
-    // Render the dashboard page
-    res.send('Dashboard page');
-  } else {
-    res.redirect('/login');
-  }
+// Protected route (requires authentication)
+app.get('/report-management', isAuthenticated, (req, res) => {
+  // Render the report management page
+  res.render('report-management');
 });
 
 
@@ -162,8 +177,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
-
-// Serve other pages similarly
 
 // Handle form submission for hazard-report
 app.post('/submit-hazard-report', (req, res) => {
@@ -187,6 +200,19 @@ app.post('/submit-hazard-report', (req, res) => {
 
     console.log('Report submitted successfully!');
     res.send('Report submitted successfully!');
+  });
+});
+
+// Route to fetch hazard reports
+app.get('/fetch-hazard-reports', (req, res) => {
+  const sql = 'SELECT * FROM hazard_reports ORDER BY id DESC';
+  db.query(sql, (err, results) => {
+    if (err) {
+      console.error('Error fetching hazard reports:', err);
+      res.status(500).send('Internal Server Error');
+      return;
+    }
+    res.json({ hazardReports: results });
   });
 });
 
@@ -241,6 +267,19 @@ db.query(sql, values, (err, result) => {
   res.send('ATS Report A submitted successfully!');
 });
 
+});
+
+// Route to fetch ATS Report A
+app.get('/fetch-ats-report-a', (req, res) => {
+  const sql = 'SELECT * FROM ats_report_a ORDER BY id DESC';
+  db.query(sql, (err, results) => {
+    if (err) {
+      console.error('Error fetching ATS Report A:', err);
+      res.status(500).send('Internal Server Error');
+      return;
+    }
+    res.json({ atsReportA: results });
+  });
 });
 
 
@@ -313,6 +352,19 @@ app.post('/submit-ats-report-b', (req, res) => {
   });
 });
 
+// Route to fetch ATS Report B
+app.get('/fetch-ats-report-b', (req, res) => {
+  const sql = 'SELECT * FROM ats_report_b ORDER BY id DESC';
+  db.query(sql, (err, results) => {
+    if (err) {
+      console.error('Error fetching ATS Report B:', err);
+      res.status(500).send('Internal Server Error');
+      return;
+    }
+    res.json({ atsReportB: results });
+  });
+});
+
 
 // Handle ATS Report C form submission
 app.post('/submit-ats-report-c', (req, res) => {
@@ -338,6 +390,19 @@ app.post('/submit-ats-report-c', (req, res) => {
 
     console.log('ATS Report C submitted successfully!');
     res.send('ATS Report C submitted successfully!');
+  });
+});
+
+// Route to fetch ATS Report C
+app.get('/fetch-ats-report-c', (req, res) => {
+  const sql = 'SELECT * FROM ats_report_c ORDER BY id DESC';
+  db.query(sql, (err, results) => {
+    if (err) {
+      console.error('Error fetching ATS Report C:', err);
+      res.status(500).send('Internal Server Error');
+      return;
+    }
+    res.json({ atsReportC: results });
   });
 });
 
@@ -376,6 +441,76 @@ app.post('/submit-voluntary-report', (req, res) => {
   });
 });
 
+// Route to fetch voluntary reports
+app.get('/fetch-voluntary-reports', (req, res) => {
+  const sql = 'SELECT * FROM voluntary_report ORDER BY id DESC';
+  db.query(sql, (err, results) => {
+    if (err) {
+      console.error('Error fetching voluntary reports:', err);
+      res.status(500).send('Internal Server Error');
+      return;
+    }
+    res.json({ voluntaryReports: results });
+  });
+});
+
+// Group entries by table
+app.get('/group-entries-by-table', (req, res) => {
+  const tables = ['hazard_reports', 'ats_report_a', 'ats_report_b', 'ats_report_c', 'voluntary_report'];
+  const groupedEntries = {};
+
+  const fetchAndGroupEntries = (tableName) => {
+    return new Promise((resolve, reject) => {
+      let fields = 'id'; // Common field for all tables
+      if (tableName !== 'hazard_reports') {
+        fields += ', ref_no'; // Additional field for tables other than hazard_reports
+      }
+      const sql = `SELECT ${fields} FROM ${tableName} ORDER BY id DESC`;
+      db.query(sql, (err, results) => {
+        if (err) {
+          console.error(`Error fetching ${tableName}:`, err);
+          reject(err);
+        } else {
+          groupedEntries[tableName] = results;
+          resolve();
+        }
+      });
+    });
+  };
+
+  const promises = tables.map((table) => fetchAndGroupEntries(table));
+
+  Promise.all(promises)
+    .then(() => {
+      res.json(groupedEntries);
+    })
+    .catch((error) => {
+      res.status(500).send('Internal Server Error');
+    });
+});
+
+// Route to render report-management.ejs and pass grouped entries and tables
+app.get('/report-management', (req, res) => {
+  // Define the tables array
+  const tables = ['hazard_reports', 'ats_report_a', 'ats_report_b', 'ats_report_c', 'voluntary_report'];
+
+  // Make a GET request to fetch grouped entries from the server
+  axios.get('http://localhost:3000/group-entries-by-table') // Assuming your server is running locally on port 3000
+    .then(response => {
+      // Pass the grouped entries and tables array to the report-management.ejs template
+      res.render('report-management', { groupedEntries: response.data, tables: tables });
+    })
+    .catch(error => {
+      console.error('Error fetching grouped entries:', error);
+      res.status(500).send('Internal Server Error');
+    });
+});
+
+
+
+
+
+app.set('view engine', 'ejs');
 
 // Start the server
 app.listen(port, () => {
